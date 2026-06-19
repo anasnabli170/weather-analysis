@@ -45,7 +45,7 @@ df = pd.DataFrame(
     }
 )
 
-df["avg_temp"] = (df["max_temp"] + df["min_temp"]) / 2
+df["avg_temp"] = ((df["max_temp"] + df["min_temp"]) / 2).round(1)
 
 print(df)
 
