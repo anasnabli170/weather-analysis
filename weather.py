@@ -16,8 +16,20 @@ response=requests.get(town_url)
 town_data=response.json()
 print(town_data)
 
-latitude=town_data['results'][0]['latitude']
-longitude=town_data['results'][0]['longitude']
+n=len(town_data['results'])
+choices=""
+for i in range (n):
+  choices+= f"{i+1}. {town_data['results'][i]['name']}, {town_data['results'][i]['admin1']}, {town_data['results'][i]['country']}\n"
+print(choices)
+
+test=False
+while not test:
+  x=int(input("Enter a number from the list: "))
+  if 1<=x<=n:
+    test=True
+
+latitude=town_data['results'][x-1]['latitude']
+longitude=town_data['results'][x-1]['longitude']
 
 weather_url=f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&start_date={start_date}&end_date={end_date}&daily=temperature_2m_max,temperature_2m_min"
 response=requests.get(weather_url)
