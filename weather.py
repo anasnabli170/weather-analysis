@@ -10,11 +10,15 @@ week_ago = today - timedelta(days=7)
 start_date = week_ago.strftime("%Y-%m-%d")
 end_date = today.strftime("%Y-%m-%d")
 
-town = input("Please enter your hometown:")
-
-town_url = f"https://geocoding-api.open-meteo.com/v1/search?name={town}&count=10&language=en&format=json"
-response = requests.get(town_url)
-town_data = response.json()
+test = False
+while not test:
+    town = input("Please enter your hometown:")
+    town_url = f"https://geocoding-api.open-meteo.com/v1/search?name={town}&count=10&language=en&format=json"
+    response = requests.get(town_url)
+    town_data = response.json()
+    test = "results" in town_data
+    if not test:
+        print("Error: Please enter an existing location:")
 
 n = len(town_data["results"])
 choices = ""
@@ -24,9 +28,14 @@ print(choices)
 
 test = False
 while not test:
-    x = int(input("Enter a number from the list: "))
-    if 1 <= x <= n:
-        test = True
+    try:
+        x = int(input("Enter a number from the list: "))
+        if 1 <= x <= n:
+            test = True
+        else:
+            print("Error: The number should be from the list")
+    except ValueError:
+        print(("Error: Please enter a number"))
 
 name = town_data["results"][x - 1]["name"]
 latitude = town_data["results"][x - 1]["latitude"]
@@ -63,14 +72,14 @@ plt.grid(True, alpha=0.3)
 plt.xticks(rotation=45)
 plt.tight_layout()
 
-plt.savefig("data/weather_chart.png")
-plt.show()
-
 if not os.path.exists("data"):
     os.makedirs("data")
 
 df.to_csv("data/your_hometown_weather.csv", index=False)
+plt.savefig("data/weather_chart.png")
+plt.show()
+
 print(f"maximum temperature:{df['max_temp'].max()}C°")
-print(f"minpimum temperature:{df['min_temp'].min()}C°")
+print(f"minimum temperature:{df['min_temp'].min()}C°")
 print(f"average temperature:{df['avg_temp'].mean():.1f}C°")
 print("Data saved to data/your_hometown_weather.csv")
