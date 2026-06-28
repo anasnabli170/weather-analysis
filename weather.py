@@ -18,7 +18,7 @@ while not test:
     town_data = response.json()
     test = "results" in town_data
     if not test:
-        print("Error: Please enter an existing location:")
+        print("Error: Please enter an existing location")
 
 n = len(town_data["results"])
 choices = ""
